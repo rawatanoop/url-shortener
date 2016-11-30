@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>URL-Shortner</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="css/common.css" media ="screen"/>
+</head>
+<body>
+
+  <nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse" id="myNavbar">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="logout"><span class="glyphicon glyphicon glyphicon-log-out"></span> Log-out </a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+
+  <center>
+    <div class="form-inline">
+     <span> <input type="text" id = "longUrlText" placeholder="long url"> </span>
+      <button type="Shorten URL" class="btn btn-primary" id = "shortButton" name ="Short it"> Short it <span class="glyphicon glyphicon-pencil"></span> </button>
+    </div>
+  </center>
+
+
+  <div class="container" >
+    <h2>My URLs</h2>
+    <div class="table-responsive" >
+      <table class="table" id="urlTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Full URL</th>
+            <th>Short URL</th>
+            <th>Created </th>
+            <th></th>
+          </tr>
+        </thead>
+      </table>
+    </div>
+    <br><br>
+
+  </body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="js/short-url.js"></script>
+  </html>
+

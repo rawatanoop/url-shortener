@@ -19,6 +19,7 @@ Production Project phase-1
 * Javascript,Css
 * HsqlDb (Used for testing)
 * Amazon Ec2 for Hosting. ([here](http://ec2-35-160-83-124.us-west-2.compute.amazonaws.com:8080/shortu))
+* Sentry ([here]([https://sentry.io/practo-jl/shorty))
 
 
 

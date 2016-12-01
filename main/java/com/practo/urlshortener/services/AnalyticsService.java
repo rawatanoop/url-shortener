@@ -16,6 +16,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.practo.urlshortener.Logger;
 import com.practo.urlshortener.Utility;
 import com.practo.urlshortener.daos.AnalyticsDao;
 import com.practo.urlshortener.daos.ShortenerDao;
@@ -33,6 +34,8 @@ public class AnalyticsService {
 
 	@Autowired
 	private AnalyticsDao analyticsDao;
+
+	Logger logger = Logger.getInstance(UserService.class);
 
 	@Autowired
 	private ShortenerDao shortenerDao;
@@ -54,18 +57,19 @@ public class AnalyticsService {
 	public List<URLModel> getURLs(int userID) {
 		return getModelList(analyticsDao.getURLs(userID));
 	}
-	
+
 	/***
 	 * This method must be called before any Browser,Country/Referer table is
 	 * used to read/write. This method will initialise the caching for these
 	 * tables.
 	 */
 	private void initialiseCaching() {
-
+		logger.info("Initialising the caching");
 		initializeBrowserCaching();
 		initializeCountryCaching();
 		initializeRefererCaching();
 		isInitialised = true;
+		logger.info("Initialised the caching");
 	}
 
 	/***
@@ -73,12 +77,14 @@ public class AnalyticsService {
 	 * be avoided.
 	 */
 	private void initializeCountryCaching() {
+		logger.info("Initialising the caching for All Countries");
 		List<Country> list = analyticsDao.getCountryList();
 		for (Iterator<Country> iterator = list.iterator(); iterator.hasNext();) {
 			Country country = iterator.next();
 			countries_1.put(country.getName(), country.getId());
 			countries_2.put(country.getId(), country.getName());
 		}
+		logger.info("Initialised successfully the caching for All Countries");
 	}
 
 	/**
@@ -86,12 +92,14 @@ public class AnalyticsService {
 	 * avoided.
 	 */
 	private void initializeBrowserCaching() {
+		logger.info("Initialising the caching for All Browsers");
 		List<Browser> list = analyticsDao.getBrowserList();
 		for (Iterator<Browser> iterator = list.iterator(); iterator.hasNext();) {
 			Browser browser = iterator.next();
 			browsers_1.put(browser.getName(), browser.getId());
 			browsers_2.put(browser.getId(), browser.getName());
 		}
+		logger.info("Initialised successfully the caching for All Browsers");
 	}
 
 	/***
@@ -99,18 +107,20 @@ public class AnalyticsService {
 	 * avoided.
 	 */
 	private void initializeRefererCaching() {
+		logger.info("Initialising the caching for All Refereres");
 		List<Referer> list = analyticsDao.getRefererList();
 		for (Iterator<Referer> iterator = list.iterator(); iterator.hasNext();) {
 			Referer referer = iterator.next();
 			referers_1.put(referer.getName(), referer.getId());
 			referers_2.put(referer.getId(), referer.getName());
 		}
+		logger.info("Initialised successfully the caching for All Refereres");
 	}
 
 	private List<URLModel> getModelList(List<Urls> urLs) {
 		List<URLModel> models = new ArrayList<URLModel>();
-		if(urLs==null)
-			return  models;
+		if (urLs == null)
+			return models;
 		for (Iterator<Urls> iterator = urLs.iterator(); iterator.hasNext();) {
 			Urls url = iterator.next();
 			URLModel model = new URLModel(url.getUrl(), Utility.encode(url.getId()));
@@ -120,11 +130,13 @@ public class AnalyticsService {
 	}
 
 	public void saveURLVisit(String shortURL, String ipAddress, String referer, String userAgent) throws IOException {
+		logger.info("Trying to save a url-click info for short-url : " + shortURL);
 		if (!isInitialised) {
 			initialiseCaching();
 		}
 		analyticsDao.saveURLVisit(new UrlVisit(new Urls(Utility.decode(shortURL)), getBrowser(userAgent),
 				getReferer(referer), getCountry(ipAddress)));
+		logger.info("Saved successfully a url-click info for short-url : " + shortURL);
 	}
 
 	/***
@@ -220,13 +232,17 @@ public class AnalyticsService {
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public AnalyticsModel getAnalytics(String shortURL) {
+		logger.info("Trying to get the analytics info for short-url : " + shortURL);
 		if (!isInitialised) {
 			initialiseCaching();
 		}
 		Long urlId = Utility.decode(shortURL);
 		Urls url = shortenerDao.getFullLink(urlId);
-		if (url == null)
+		if (url == null){
+			logger.info("The short-url : " + shortURL +" is not a valid row in database");
 			return null;
+		}
+			
 		AnalyticsModel model = new AnalyticsModel(url.getUrl(), shortURL, new BigInteger("0"), url.getCreatedAt());
 		List browserAnytcs = fillClickProperties(analyticsDao.groupByBrowser(urlId), browsers_2);
 		List locationAnytcs = fillClickProperties(analyticsDao.groupByLocation(urlId), countries_2);
@@ -238,9 +254,16 @@ public class AnalyticsService {
 		model.setBrowsersAnytcs(browserAnytcs);
 		model.setLocationAnytcs(locationAnytcs);
 		model.setRefererAnytcs(refererAnytcs);
+		logger.info("Successfully retrieved the analytics info for short-url : " + shortURL);
 		return model;
 	}
 
+	/***
+	 * This methods fill the Browser/Refereres/Country details.
+	 * @param list
+	 * @param cache
+	 * @return
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private List fillClickProperties(List list, Map<Integer, String> cache) {
 		List filledList = new ArrayList<CountModel>();

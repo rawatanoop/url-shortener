@@ -26,14 +26,14 @@ public class GlobalExceptionHandeler {
 	public void handelConflictException(ConflictException e, HttpServletResponse response) throws IOException {
 		response.sendError(HttpStatus.CONFLICT.value());
 	}
-	
+
 	@ExceptionHandler
 	public void handelUnautherizedException(UnauthorizedException e, HttpServletResponse response) throws IOException {
 		response.sendError(HttpStatus.UNAUTHORIZED.value());
 	}
-	
+
 	@ExceptionHandler
 	public void handelException(Exception e, HttpServletResponse response) throws IOException {
-		response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(),"Some interner error occurred!");
+		response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Some interner error occurred!");
 	}
 }

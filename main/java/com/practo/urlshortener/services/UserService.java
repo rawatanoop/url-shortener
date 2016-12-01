@@ -3,6 +3,7 @@ package com.practo.urlshortener.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.practo.urlshortener.Logger;
 import com.practo.urlshortener.Utility;
 import com.practo.urlshortener.daos.UserDao;
 import com.practo.urlshortener.entities.Users;
@@ -10,6 +11,8 @@ import com.practo.urlshortener.models.UserModel;
 
 @Service
 public class UserService {
+
+	Logger logger = Logger.getInstance(UserService.class);
 
 	@Autowired
 	private UserDao userDao;
@@ -22,16 +25,20 @@ public class UserService {
 	 * @return
 	 */
 	public int registerUser(UserModel user) {
-		if (!Utility.isValidEMailID(user.getEmailID()))
+		logger.info("Register User started for user-email " + user.getEmailID());
+		if (!Utility.isValidEMailID(user.getEmailID())) {
+			logger.info("user-email is not a valid email" + user.getEmailID());
 			return -1;
+		}
 		try {
 			String password = Utility.encriptPassword(user.getPassword());
 			Users userEntity = getUserEnity(user);
 			userEntity.setPassword(password);
 			return userDao.createUser(userEntity);
 		} catch (Exception e) {
-			return -1;
+			logger.error("User can not be created for emailId" + user.getEmailID(), e);
 		}
+		return -1;
 
 	}
 
@@ -59,9 +66,9 @@ public class UserService {
 		}
 		return null;
 	}
-	
-	public Users getUserByEmail(String email){
-		 return userDao.getUserByEmailId(email);
+
+	public Users getUserByEmail(String email) {
+		return userDao.getUserByEmailId(email);
 	}
 
 }

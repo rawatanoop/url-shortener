@@ -1,6 +1,5 @@
 package com.practo.urlshortener.services;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.junit.Assert;
@@ -12,10 +11,7 @@ import org.springframework.boot.test.context.TestComponent;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.practo.urlshortener.entities.Users;
-import com.practo.urlshortener.models.AnalyticsModel;
 import com.practo.urlshortener.models.URLModel;
-import com.practo.urlshortener.models.UserModel;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -29,37 +25,37 @@ public class AnalyticsServiceTest {
 	@Test
 	public void getURL_test() {
 		List<URLModel> url = analyticsService.getURLs(1, 1, 1);
-		Assert.assertTrue(url !=null);
+		Assert.assertTrue(url != null);
 	}
 
 	@Test
 	public void getURLs_test() {
-		Assert.assertTrue(analyticsService.getURLs(1)!=null);
+		Assert.assertTrue(analyticsService.getURLs(1) != null);
 	}
 
-//	@Test
-//	public void saveURLVisit_test_1() {
-//		try {
-//			analyticsService.saveURLVisit("1","1.1.1.1","referer.com","Chrome");
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	
-//	}
-	
-//	@Test
-//	public void saveURLVisit_test_2() {
-//		try {
-//			analyticsService.saveURLVisit("1","1.1.1.1","www.test.com","Mozilla");
-//		} catch (IOException e) {
-//			Assert.assertFalse(true);
-//		}	
-//	}
+	// @Test
+	// public void saveURLVisit_test_1() {
+	// try {
+	// analyticsService.saveURLVisit("1","1.1.1.1","referer.com","Chrome");
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	//
+	// }
 
-//	@Test
-//	public void getAnalytics_test_2() {
-//		AnalyticsModel model = analyticsService.getAnalytics("1");
-//		Assert.assertTrue(model!=null);
-//	}
+	// @Test
+	// public void saveURLVisit_test_2() {
+	// try {
+	// analyticsService.saveURLVisit("1","1.1.1.1","www.test.com","Mozilla");
+	// } catch (IOException e) {
+	// Assert.assertFalse(true);
+	// }
+	// }
+
+	// @Test
+	// public void getAnalytics_test_2() {
+	// AnalyticsModel model = analyticsService.getAnalytics("1");
+	// Assert.assertTrue(model!=null);
+	// }
 
 }

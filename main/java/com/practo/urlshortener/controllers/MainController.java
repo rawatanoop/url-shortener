@@ -74,8 +74,8 @@ public class MainController {
 			if (pageNo == null | pageSize == null) {
 				return analyticsService.getURLs(userID);
 			}
-			if(pageNo>0 && pageSize>0)
-			return analyticsService.getURLs(userID, pageNo, pageSize);
+			if (pageNo > 0 && pageSize > 0)
+				return analyticsService.getURLs(userID, pageNo, pageSize);
 		}
 		return null;
 	}
@@ -99,13 +99,14 @@ public class MainController {
 	@RequestMapping(value = "/analytics/{shortURL}", method = RequestMethod.GET)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.OK)
-	public AnalyticsModel getAnalytics(@PathVariable(value = "shortURL") String shortURL, HttpSession session) throws UnauthorizedException {
+	public AnalyticsModel getAnalytics(@PathVariable(value = "shortURL") String shortURL, HttpSession session)
+			throws UnauthorizedException {
 		if (session.getAttribute(Utility.UserID_Session) == null)
 			throw new UnauthorizedException("User is not logged-in");
 		Urls url = shortenerService.getLongURL(shortURL);
 		if (url != null && url.getUserID().getId().equals(session.getAttribute(Utility.UserID_Session))) {
 			return analyticsService.getAnalytics(shortURL);
-		} 
+		}
 		throw new UnauthorizedException("User is not allowed to access these details");
 	}
 

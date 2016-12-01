@@ -18,8 +18,6 @@ Production Project phase-1
 * Hibernate (ORM )
 * Javascript,Css
 * HsqlDb (Used for testing)
-* New Relic [here](https://rpm.newrelic.com/accounts/1463060/applications/35236792)	
-* Travis ([here](https://travis-ci.org/rawatanoop/Springboot_HelloProject))
 * Amazon Ec2 for Hosting. ([here](http://ec2-35-160-83-124.us-west-2.compute.amazonaws.com:8080/shortu))
 
 

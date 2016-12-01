@@ -3,7 +3,7 @@ Production Project phase-1
 
 ## Project Documentation
 
-* Apiary documentation can be found [here](https://app.apiary.io/rawatanoop/editor )
+* Apiary documentation can be found [here](https://app.apiary.io/shorty/editor)
 * The ER diagram of the Database [here](https://drive.google.com/drive/folders/0Byun6YOvkyY-cklXSFZxbldoVDA)
 
 

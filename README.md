@@ -10,7 +10,7 @@ Production Project phase-1
 * Test Coverage [here] (http://ec2-35-161-91-246.us-west-2.compute.amazonaws.com:8080/lifeline/jacoco/index.html)
 
 ## Hosted on
- [amazon ec2 server](http://ec2-35-161-91-246.us-west-2.compute.amazonaws.com:8080/lifeline)
+ [amazon ec2 server](http://ec2-35-160-83-124.us-west-2.compute.amazonaws.com:8080/shortu)
  
   
 

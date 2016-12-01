@@ -1,4 +1,4 @@
-# url-shortener
+# Shortu (the url-shortener)
 Production Project phase-1
 
 ## Project Documentation

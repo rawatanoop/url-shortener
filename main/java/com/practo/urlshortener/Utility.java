@@ -1,7 +1,5 @@
 package com.practo.urlshortener;
 
-import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.security.MessageDigest;
 
 import javax.crypto.Cipher;
@@ -12,35 +10,28 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.tomcat.util.codec.binary.Base64;
 
+import net.sf.uadetector.UserAgentStringParser;
+import net.sf.uadetector.service.UADetectorServiceFactory;
+
 public class Utility {
 	public static final String ALPHABET = "123456789abcdfghjkmnpqrstvwxyzABCDFGHJKLMNPQRSTVWXYZ";
 	public static final int BASE = ALPHABET.length();
-	public static final String key = "RANDOM-KEY-123456789"; 
+	public static final String key = "RANDOM-KEY-123456789";
 	public static final String UserID_Session = "userID";
 	private static byte[] sharedvector = { 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11 };
-	public static String URL_Prefix= "OurDomain/#/";
+	public static String URL_Prefix = "";
+	public static UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
 
 	public static String encode(Long num) {
-//		byte[] encode = Base64.encodeInteger(new BigInteger(num.toString()));
-//		try {
-//			return new String(encode, "UTF-8");
-//		} catch (UnsupportedEncodingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		StringBuilder str = new StringBuilder();
 		while (num > 0) {
 			str.insert(0, ALPHABET.charAt((int) (num % BASE)));
 			num = num / BASE;
 		}
 		return str.toString();
-		//return null;
 	}
 
 	public static Long decode(String str) {
-//		byte[] decode = Base64.decodeBase64(str);
-//			return new BigInteger(decode).longValue();
-
 		Long num = 0l;
 		for (int i = 0; i < str.length(); i++) {
 			num = num * BASE + ALPHABET.indexOf(str.charAt(i));
@@ -49,6 +40,8 @@ public class Utility {
 	}
 
 	public static boolean isValidShortLink(String shortLink) {
+		if (shortLink == null || shortLink.trim().isEmpty())
+			return false;
 		return true;
 	}
 
@@ -108,4 +101,7 @@ public class Utility {
 		return result;
 	}
 
+	public static String getBrowserName(String agent) {
+		return parser.parse(agent).getName();
+	}
 }

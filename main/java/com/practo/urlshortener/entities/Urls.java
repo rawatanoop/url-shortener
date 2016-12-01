@@ -53,7 +53,7 @@ public class Urls implements Serializable {
 	@Size(min = 1, max = 700)
 	@Column(name = "URL")
 	private String url;
-	@Basic(optional = false)
+	//@Basic(optional = false)
 
 	@Column(name = "Created_At")
 	@Temporal(TemporalType.TIMESTAMP)

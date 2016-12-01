@@ -58,8 +58,8 @@ public class Users implements Serializable {
 	@Size(min = 1, max = 255)
 	@Column(name = "Password")
 	private String password;
-	@Basic(optional = false)
 
+	// @Basic(optional = false)
 	@Column(name = "Registered_At")
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date registeredAt;

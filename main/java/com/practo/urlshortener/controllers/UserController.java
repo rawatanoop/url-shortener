@@ -1,7 +1,5 @@
 package com.practo.urlshortener.controllers;
 
-import java.io.IOException;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -26,13 +24,25 @@ public class UserController {
 
 	@RequestMapping(value = "/user/login", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> login(@RequestBody UserModel user, HttpSession session,HttpServletResponse response) {
-		
-		if (user == null )
+	public ResponseEntity<String> login(@RequestBody UserModel user, HttpSession session,
+			HttpServletResponse response) {
+
+		if (user == null || user.getEmailID() == null || user.getEmailID().trim().isEmpty())
 			return new ResponseEntity<String>("User email/password are not valid", HttpStatus.UNAUTHORIZED);
+		user.setEmailID(user.getEmailID().trim());
 		Users userEntity = userService.isVaildUser(user);
+		if (userEntity == null)
+			return new ResponseEntity<String>("User email/password are not valid", HttpStatus.UNAUTHORIZED);
 		session.setAttribute(Utility.UserID_Session, userEntity.getId());
 		return new ResponseEntity<String>("Successfully logged-in", HttpStatus.OK);
+
+	}
+
+	@RequestMapping(value = "/user/logout", method = RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<String> logout(HttpSession session) {
+		session.invalidate();
+		return new ResponseEntity<String>("Successfully logged-out", HttpStatus.OK);
 
 	}
 
@@ -43,7 +53,8 @@ public class UserController {
 				| !Utility.isValidEMailID(user.getEmailID()) | user.getPassword() == null
 				| user.getPassword().isEmpty())
 			return new ResponseEntity<String>("User details are not valid", HttpStatus.BAD_REQUEST);
-
+		user.setName(user.getName().trim());
+		user.setEmailID(user.getEmailID().trim());
 		int userID = userService.registerUser(user);
 		if (userID == -1)
 			return new ResponseEntity<String>("User EmailID already in use", HttpStatus.UNAUTHORIZED);

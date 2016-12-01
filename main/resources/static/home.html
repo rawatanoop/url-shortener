@@ -20,7 +20,7 @@
       </div>
       <div class="collapse navbar-collapse" id="myNavbar">
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="logout"><span class="glyphicon glyphicon glyphicon-log-out"></span> Log-out </a></li>
+          <li><button id = "logoutButton" class="glyphicon glyphicon glyphicon-log-out"></button>  </li>
         </ul>
       </div>
     </div>
@@ -29,8 +29,9 @@
 
   <center>
     <div class="form-inline">
-     <span> <input type="text" id = "longUrlText" placeholder="long url"> </span>
+     <span> <input type="text" id = "longUrlText" placeholder="please type your long url here ..." style="width: 300px;"> 
       <button type="Shorten URL" class="btn btn-primary" id = "shortButton" name ="Short it"> Short it <span class="glyphicon glyphicon-pencil"></span> </button>
+    </span>
     </div>
   </center>
 
@@ -48,7 +49,8 @@
         </thead>
       </table>
     </div>   
-      <div class="table-responsive" style="float:left; width:50%;">
+      <div id="chartContainer" style="float:left; width:50%;">
+      <center> <h3> <p id ="clicksText"> </p> </h3></center>
       <div id="browserChartContainer" style="height: 200px;" ></div><br>
       <div id="refererChartContainer" style="height: 200px;" ></div><br>
       <div id="countryChartContainer" style="height: 200px;" ></div><br><br>
@@ -81,6 +83,8 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script src="js/analytics.js"></script>
   <script src="js/short-url.js"></script>
+  <script src="js/logout.js"></script>
   </html>
 

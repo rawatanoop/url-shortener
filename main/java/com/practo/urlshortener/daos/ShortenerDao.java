@@ -25,9 +25,12 @@ public class ShortenerDao {
 
 	public Urls getFullLink(Long id) {
 		Urls url = new Urls();
-		getSession().load(url, id);
+		try {
+			getSession().load(url, id);
+		} catch (Exception e) {
+			return null;
+		}
 		return url;
-
 	}
 
 	public Long createShortURL(Urls url) {
@@ -39,7 +42,7 @@ public class ShortenerDao {
 		query.setParameter("userID", urls.getUserID());
 		query.setParameter("url", urls.getUrl());
 		List list = query.list();
-		if(list!=null && !list.isEmpty())
+		if (list != null && !list.isEmpty())
 			return (Urls) list.get(0);
 		return null;
 	}

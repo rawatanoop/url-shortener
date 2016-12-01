@@ -37,7 +37,7 @@ public class UserDao {
 	public Users getUserByEmailId(String emailID) {
 		Query query = getSession().createQuery("from Users where Email=:emailID");
 		query.setParameter("emailID", emailID);
-		List list =  query.list();
+		List list = query.list();
 		if (list == null || list.isEmpty())
 			return null;
 		return (Users) list.get(0);

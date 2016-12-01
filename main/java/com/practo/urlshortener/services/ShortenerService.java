@@ -12,7 +12,6 @@ import com.practo.urlshortener.Utility;
 import com.practo.urlshortener.daos.ShortenerDao;
 import com.practo.urlshortener.entities.Urls;
 import com.practo.urlshortener.entities.Users;
-import com.practo.urlshortener.models.URLModel;
 
 @Service
 public class ShortenerService {
@@ -20,27 +19,47 @@ public class ShortenerService {
 	@Autowired
 	private ShortenerDao shortenerDao;
 
+	/***
+	 * Returns the long url corresponding to the shortLink.
+	 * 
+	 * @param shortLink
+	 * @return
+	 */
 	@Transactional
 	public Urls getLongURL(String shortLink) {
-		String fullLink = null;
 		if (Utility.isValidShortLink(shortLink)) {
 			return shortenerDao.getFullLink(Utility.decode(shortLink));
 		}
 		return null;
 	}
 
+	/***
+	 * Creates and returns a short url for the given long url for the particuar
+	 * userID.
+	 * 
+	 * @param longUrl
+	 * @param userID
+	 * @return
+	 */
 	@Transactional
 	public String createShortURL(String longUrl, int userID) {
 		try {
 			URI uri = new URI(longUrl);
-		
-				return Utility.encode(shortenerDao.createShortURL(new Urls(longUrl, new Users(userID))));
+			return Utility.encode(shortenerDao.createShortURL(new Urls(longUrl, new Users(userID))));
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
+	/****
+	 * Returns the row object corresponding to particular longURL created by the
+	 * userID.
+	 * 
+	 * @param longUrl
+	 * @param userID
+	 * @return
+	 */
 	@Transactional
 	public Urls getURL(String longUrl, int userID) {
 		try {

@@ -1,10 +1,6 @@
 package com.practo.urlshortener.controllers;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.security.Principal;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,13 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.practo.urlshortener.Utility;
 import com.practo.urlshortener.entities.Urls;
 import com.practo.urlshortener.models.AnalyticsModel;
 import com.practo.urlshortener.models.URLModel;
-import com.practo.urlshortener.models.UserModel;
 import com.practo.urlshortener.services.AnalyticsService;
 import com.practo.urlshortener.services.ShortenerService;
 
@@ -42,42 +36,44 @@ public class MainController {
 	@RequestMapping(value = "/api/shortener", method = RequestMethod.POST)
 	@ResponseBody
 	public ResponseEntity<String> createShortURL(@RequestBody URLModel url, HttpSession session) {
-		if(url==null|url.getLongURL()==null|url.getLongURL().isEmpty())
-			return new ResponseEntity<String>("Invalid Parameters : LongUrl", HttpStatus.BAD_REQUEST);	
-		if (session == null | session.getAttribute(Utility.UserID_Session) == null )
-			return new ResponseEntity<String>("Invalid User", HttpStatus.UNAUTHORIZED);		
-			int userID = (int) session.getAttribute(Utility.UserID_Session);
-			Urls oldUrl = shortenerService.getURL(url.getLongURL(), userID);
-			if(oldUrl!=null){
-				return new ResponseEntity<String>(Utility.URL_Prefix+Utility.encode(oldUrl.getId()), HttpStatus.OK);
-			}
-			String shortUrl = shortenerService.createShortURL(url.getLongURL(), userID);
-			if (shortUrl != null)
-			return new ResponseEntity<String>(Utility.URL_Prefix+shortUrl, HttpStatus.CREATED);
+		if (url == null | url.getLongURL() == null | url.getLongURL().isEmpty() || url.getLongURL().trim().isEmpty())
+			return new ResponseEntity<String>("Invalid Parameters : LongUrl", HttpStatus.BAD_REQUEST);
+		if (session == null | session.getAttribute(Utility.UserID_Session) == null)
+			return new ResponseEntity<String>("Invalid User", HttpStatus.UNAUTHORIZED);
+		int userID = (int) session.getAttribute(Utility.UserID_Session);
+		Urls oldUrl = shortenerService.getURL(url.getLongURL().trim(), userID);
+		if (oldUrl != null) {
+			return new ResponseEntity<String>(Utility.URL_Prefix + Utility.encode(oldUrl.getId()), HttpStatus.OK);
+		}
+		String shortUrl = shortenerService.createShortURL(url.getLongURL().trim(), userID);
+		if (shortUrl != null)
+			return new ResponseEntity<String>(Utility.URL_Prefix + shortUrl, HttpStatus.CREATED);
 		return new ResponseEntity<String>("Error during creating short-url", HttpStatus.NOT_FOUND);
 	}
 
 	@RequestMapping(value = "/api/shortener", method = RequestMethod.GET)
 	@ResponseBody
 	public String getLongURL(String shortUrl) {
-		String url = shortenerService.getLongURL(shortUrl).getUrl();
-		return Utility.URL_Prefix+url;
+		if (shortUrl == null || shortUrl.isEmpty())
+			return null;
+		String url = shortenerService.getLongURL(shortUrl.trim()).getUrl();
+		return url;
 	}
 
 	@RequestMapping(value = "/api/list", method = RequestMethod.GET)
 	@ResponseBody
 	public List<URLModel> getAllUrls(Integer pageNo, Integer pageSize, HttpSession session) {
-		
+
 		if (session != null & session.getAttribute(Utility.UserID_Session) != null) {
 			int userID = (int) session.getAttribute(Utility.UserID_Session);
-			if(pageNo==null|pageSize==null){
+			if (pageNo == null | pageSize == null) {
 				return analyticsService.getURLs(userID);
-			}			
+			}
+			if(pageNo>0 && pageSize>0)
 			return analyticsService.getURLs(userID, pageNo, pageSize);
 		}
 		return null;
 	}
-
 
 	@RequestMapping(value = "/go/{shortURL}", method = RequestMethod.GET)
 	@ResponseBody
@@ -97,13 +93,13 @@ public class MainController {
 	@RequestMapping(value = "/analytics/{shortURL}", method = RequestMethod.GET)
 	@ResponseBody
 	public AnalyticsModel getAnalytics(@PathVariable(value = "shortURL") String shortURL, HttpSession session) {
+		if (session.getAttribute(Utility.UserID_Session) == null)
+			return null;
 		Urls url = shortenerService.getLongURL(shortURL);
-		 if(url !=null && url.getUserID().getId().equals(session.getAttribute(Utility.UserID_Session)))
-		{
+		if (url != null && url.getUserID().getId().equals(session.getAttribute(Utility.UserID_Session))) {
 			return analyticsService.getAnalytics(shortURL);
-		}
-		 else
-			 return null;
+		} else
+			return null;
 
 	}
 

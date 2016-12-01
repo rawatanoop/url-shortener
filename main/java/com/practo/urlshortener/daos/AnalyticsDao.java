@@ -1,6 +1,5 @@
 package com.practo.urlshortener.daos;
 
-import java.util.Iterator;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -59,7 +58,8 @@ public class AnalyticsDao {
 	}
 
 	public List groupByLocation(Long urlId) {
-		Query query = getSession().createSQLQuery("SELECT Location, COUNT(*) FROM url_visit where URL =:urlId GROUP BY Location");
+		Query query = getSession()
+				.createSQLQuery("SELECT Location, COUNT(*) FROM url_visit where URL =:urlId GROUP BY Location");
 		query.setParameter("urlId", urlId);
 
 		return query.list();

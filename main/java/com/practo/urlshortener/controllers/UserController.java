@@ -5,17 +5,20 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.practo.urlshortener.Utility;
 import com.practo.urlshortener.entities.Users;
 import com.practo.urlshortener.models.UserModel;
 import com.practo.urlshortener.services.UserService;
+
+import inti.ws.spring.exception.client.ConflictException;
+import inti.ws.spring.exception.client.UnauthorizedException;
 
 @RestController
 public class UserController {
@@ -24,43 +27,44 @@ public class UserController {
 
 	@RequestMapping(value = "/user/login", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> login(@RequestBody UserModel user, HttpSession session,
-			HttpServletResponse response) {
+	@ResponseStatus(HttpStatus.OK)
+	public void login(@RequestBody UserModel user, HttpSession session, HttpServletResponse response)
+			throws UnauthorizedException {
 
 		if (user == null || user.getEmailID() == null || user.getEmailID().trim().isEmpty())
-			return new ResponseEntity<String>("User email/password are not valid", HttpStatus.UNAUTHORIZED);
+			throw new IllegalArgumentException("User email/password are null");
 		user.setEmailID(user.getEmailID().trim());
 		Users userEntity = userService.isVaildUser(user);
 		if (userEntity == null)
-			return new ResponseEntity<String>("User email/password are not valid", HttpStatus.UNAUTHORIZED);
+			throw new UnauthorizedException("User email/password are not valid");
 		session.setAttribute(Utility.UserID_Session, userEntity.getId());
-		return new ResponseEntity<String>("Successfully logged-in", HttpStatus.OK);
 
 	}
 
 	@RequestMapping(value = "/user/logout", method = RequestMethod.GET)
 	@ResponseBody
-	public ResponseEntity<String> logout(HttpSession session) {
+	@ResponseStatus(HttpStatus.OK)
+	public void logout(HttpSession session) {
 		session.invalidate();
-		return new ResponseEntity<String>("Successfully logged-out", HttpStatus.OK);
-
 	}
 
 	@RequestMapping(value = "/user/register", method = RequestMethod.POST)
 	@ResponseBody
-	public ResponseEntity<String> registration(@RequestBody UserModel user, HttpSession session) {
+	@ResponseStatus(HttpStatus.CREATED)
+	public void registration(@RequestBody UserModel user, HttpSession session) throws ConflictException {
 		if (user == null | user.getName() == null | user.getName().isEmpty()
 				| !Utility.isValidEMailID(user.getEmailID()) | user.getPassword() == null
 				| user.getPassword().isEmpty())
-			return new ResponseEntity<String>("User details are not valid", HttpStatus.BAD_REQUEST);
+			throw new IllegalArgumentException("User details are empty");
 		user.setName(user.getName().trim());
 		user.setEmailID(user.getEmailID().trim());
+		Users userEntity = userService.getUserByEmail(user.getEmailID());
+		if (userEntity != null)
+			throw new ConflictException("User EmailID already in use");
 		int userID = userService.registerUser(user);
 		if (userID == -1)
-			return new ResponseEntity<String>("User EmailID already in use", HttpStatus.UNAUTHORIZED);
+			throw new IllegalArgumentException("Can not register user with given details");
 		session.setAttribute(Utility.UserID_Session, userID);
-		return new ResponseEntity<String>("User successfully registered", HttpStatus.CREATED);
-
 	}
 
 }

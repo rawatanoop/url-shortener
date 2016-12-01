@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.practo.urlshortener.Utility;
 import com.practo.urlshortener.entities.Urls;
@@ -24,6 +25,8 @@ import com.practo.urlshortener.models.AnalyticsModel;
 import com.practo.urlshortener.models.URLModel;
 import com.practo.urlshortener.services.AnalyticsService;
 import com.practo.urlshortener.services.ShortenerService;
+
+import inti.ws.spring.exception.client.UnauthorizedException;
 
 @Controller
 public class MainController {
@@ -35,6 +38,7 @@ public class MainController {
 
 	@RequestMapping(value = "/api/shortener", method = RequestMethod.POST)
 	@ResponseBody
+	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<String> createShortURL(@RequestBody URLModel url, HttpSession session) {
 		if (url == null | url.getLongURL() == null | url.getLongURL().isEmpty() || url.getLongURL().trim().isEmpty())
 			return new ResponseEntity<String>("Invalid Parameters : LongUrl", HttpStatus.BAD_REQUEST);
@@ -62,6 +66,7 @@ public class MainController {
 
 	@RequestMapping(value = "/api/list", method = RequestMethod.GET)
 	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
 	public List<URLModel> getAllUrls(Integer pageNo, Integer pageSize, HttpSession session) {
 
 		if (session != null & session.getAttribute(Utility.UserID_Session) != null) {
@@ -77,6 +82,7 @@ public class MainController {
 
 	@RequestMapping(value = "/go/{shortURL}", method = RequestMethod.GET)
 	@ResponseBody
+	@ResponseStatus(HttpStatus.OK)
 	public void redirect(@PathVariable(value = "shortURL") String shortURL, HttpServletResponse response,
 			HttpServletRequest request) throws IOException {
 		String url = shortenerService.getLongURL(shortURL).getUrl();
@@ -92,15 +98,15 @@ public class MainController {
 
 	@RequestMapping(value = "/analytics/{shortURL}", method = RequestMethod.GET)
 	@ResponseBody
-	public AnalyticsModel getAnalytics(@PathVariable(value = "shortURL") String shortURL, HttpSession session) {
+	@ResponseStatus(HttpStatus.OK)
+	public AnalyticsModel getAnalytics(@PathVariable(value = "shortURL") String shortURL, HttpSession session) throws UnauthorizedException {
 		if (session.getAttribute(Utility.UserID_Session) == null)
-			return null;
+			throw new UnauthorizedException("User is not logged-in");
 		Urls url = shortenerService.getLongURL(shortURL);
 		if (url != null && url.getUserID().getId().equals(session.getAttribute(Utility.UserID_Session))) {
 			return analyticsService.getAnalytics(shortURL);
-		} else
-			return null;
-
+		} 
+		throw new UnauthorizedException("User is not allowed to access these details");
 	}
 
 }

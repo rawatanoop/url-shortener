@@ -49,7 +49,7 @@ public class UserService {
 	public Users isVaildUser(UserModel userModel) {
 		if (userModel != null && userModel.getPassword() != null && Utility.isValidEMailID(userModel.getEmailID())) {
 			try {
-				Users user = userDao.getUserByEmailId(userModel.getEmailID());
+				Users user = getUserByEmail(userModel.getEmailID());
 				if (user != null && Utility.decryptPassword(user.getPassword()).equals(userModel.getPassword()))
 					return user;
 			} catch (Exception e) {
@@ -58,6 +58,10 @@ public class UserService {
 			}
 		}
 		return null;
+	}
+	
+	public Users getUserByEmail(String email){
+		 return userDao.getUserByEmailId(email);
 	}
 
 }

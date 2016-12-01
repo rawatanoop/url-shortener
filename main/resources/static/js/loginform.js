@@ -37,7 +37,7 @@ $(function() {
         window.location.replace ('home.html');
        },
        error: function(xhr, text, error) {
-      alert('Error: ' + xhr.responseText);
+      alert('Error: ' + xhr.responseJSON.message);
    }
     })
     }
@@ -87,7 +87,7 @@ $('#register-form').validate({
        
        },
        error: function(xhr, text, error) {
-      alert('Error: ' + xhr.responseText);
+      alert('Error: ' + xhr.responseJSON.message);
    }
     })
     }

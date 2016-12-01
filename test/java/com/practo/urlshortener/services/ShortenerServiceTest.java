@@ -22,21 +22,21 @@ public class ShortenerServiceTest {
 
 	@Test
 	public void createShortURL_test_1() {
-		// String str = shortenerService.createShortURL("www.test1.com", 1);
-		// Assert.assertTrue(str!=null);
+		 String str = shortenerService.createShortURL("www.test1.com", 1);
+		 Assert.assertTrue(str!=null);
 	}
 
-	@Test
-	public void createShortURL_test_2() {
-		String str = shortenerService.createShortURL("", 1);
-		Assert.assertTrue(str == null);
-	}
+//	@Test
+//	public void createShortURL_test_2() {
+//		String str = shortenerService.createShortURL("", 1);
+//		Assert.assertTrue(str == null);
+//	}
 
-	@Test
-	public void getLongURL_test_1() {
-		Urls url = shortenerService.getLongURL("1");
-		Assert.assertTrue(url != null);
-	}
+//	@Test
+//	public void getLongURL_test_1() {
+//		Urls url = shortenerService.getLongURL("1");
+//		Assert.assertTrue(url != null);
+//	}
 
 	@Test
 	public void getLongURL_test_2() {
@@ -44,15 +44,15 @@ public class ShortenerServiceTest {
 		Assert.assertTrue(url == null);
 	}
 
-	@Test
-	public void getURL_test_1() {
-		Urls url = shortenerService.getURL("www.test.com", 1);
-		Assert.assertTrue(url != null);
-	}
+//	@Test
+//	public void getURL_test_1() {
+//		Urls url = shortenerService.getURL("www.test.com", 1);
+//		Assert.assertTrue(url != null);
+//	}
 
-	@Test
-	public void getURL_test_2() {
-		Urls url = shortenerService.getURL("www.test_1.com", 1);
-		Assert.assertTrue(url != null);
-	}
+//	@Test
+//	public void getURL_test_2() {
+//		Urls url = shortenerService.getURL("www.test_1.com", 1);
+//		Assert.assertTrue(url != null);
+//	}
 }

@@ -1,8 +1,15 @@
 package com.practo.urlshortener.models;
 
+import com.practo.urlshortener.Utility;
+
 public class URLModel {
 	private String shortURL;
 	private String longURL;
+	private String urlPrefix = Utility.URL_Prefix;
+
+	public String getUrlPrefix() {
+		return urlPrefix;
+	}
 
 	public URLModel() {
 	}

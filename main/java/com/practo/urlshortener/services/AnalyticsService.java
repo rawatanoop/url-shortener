@@ -238,11 +238,11 @@ public class AnalyticsService {
 		}
 		Long urlId = Utility.decode(shortURL);
 		Urls url = shortenerDao.getFullLink(urlId);
-		if (url == null){
-			logger.info("The short-url : " + shortURL +" is not a valid row in database");
+		if (url == null) {
+			logger.info("The short-url : " + shortURL + " is not a valid row in database");
 			return null;
 		}
-			
+
 		AnalyticsModel model = new AnalyticsModel(url.getUrl(), shortURL, new BigInteger("0"), url.getCreatedAt());
 		List browserAnytcs = fillClickProperties(analyticsDao.groupByBrowser(urlId), browsers_2);
 		List locationAnytcs = fillClickProperties(analyticsDao.groupByLocation(urlId), countries_2);
@@ -260,6 +260,7 @@ public class AnalyticsService {
 
 	/***
 	 * This methods fill the Browser/Refereres/Country details.
+	 * 
 	 * @param list
 	 * @param cache
 	 * @return

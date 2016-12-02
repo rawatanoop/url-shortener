@@ -2,8 +2,7 @@
 function createRow(data,i,item){
 
      tr = $('<tr/>');
-      tr.append("<td> <a href = '" +item.longURL+"'>"+item.longURL+"</a></td> <td>"+item.shortURL+
-      "</td> ");
+      tr.append("<td> <a href = '" +item.longURL+"'>"+item.longURL+"</a></td> <td> <a href = '" +item.urlPrefix+item.shortURL+"'>"+item.shortURL+"</a></td> ");
       //tr.append("<button class="btn btn-primary"  > <span class="glyphicon glyphicon-equalizer"></span> </button>");
 
       tr.append($('<button/>', { 

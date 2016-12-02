@@ -51,6 +51,7 @@ public class ShortenerService {
 		logger.info("Creating a short url for " + longUrl);
 		try {
 			URI uri = new URI(longUrl);
+			longUrl = Utility.getGoodURL(longUrl);
 			return Utility.encode(shortenerDao.createShortURL(new Urls(longUrl, new Users(userID))));
 		} catch (URISyntaxException e) {
 			logger.info(longUrl + " is not a valid url");
@@ -69,16 +70,8 @@ public class ShortenerService {
 	 */
 	@Transactional
 	public Urls getURL(String longUrl, int userID) {
-		logger.info("Returning the url-details for " + longUrl + " with userID: " + userID);
-		try {
-			URI uri = new URI(longUrl);
-			return shortenerDao.getURL(new Urls(longUrl, new Users(userID)));
-
-		} catch (URISyntaxException e) {
-			logger.info("Can't return the url-details for invalid" + longUrl);
-		}
-		logger.info("Can not return the url-details for " + longUrl + " with userID: " + userID);
-		return null;
+		longUrl = Utility.getGoodURL(longUrl);
+		return shortenerDao.getURL(new Urls(longUrl, new Users(userID)));
 	}
 
 }

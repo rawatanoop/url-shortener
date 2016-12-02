@@ -10,7 +10,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,20 +38,22 @@ public class MainController {
 	@RequestMapping(value = "/api/shortener", method = RequestMethod.POST)
 	@ResponseBody
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<String> createShortURL(@RequestBody URLModel url, HttpSession session) {
-		if (url == null | url.getLongURL() == null | url.getLongURL().isEmpty() || url.getLongURL().trim().isEmpty())
-			return new ResponseEntity<String>("Invalid Parameters : LongUrl", HttpStatus.BAD_REQUEST);
+	public URLModel createShortURL(@RequestBody URLModel url, HttpSession session) throws Exception {
+		if (url == null || url.getLongURL() == null || url.getLongURL().isEmpty()
+				|| !Utility.isValidURL(url.getLongURL()))
+			throw new IllegalArgumentException("Invalid Parameters : LongUrl");
 		if (session == null | session.getAttribute(Utility.UserID_Session) == null)
-			return new ResponseEntity<String>("Invalid User", HttpStatus.UNAUTHORIZED);
+			throw new UnauthorizedException("Invalid user or session is logged-out");
 		int userID = (int) session.getAttribute(Utility.UserID_Session);
 		Urls oldUrl = shortenerService.getURL(url.getLongURL().trim(), userID);
 		if (oldUrl != null) {
-			return new ResponseEntity<String>(Utility.URL_Prefix + Utility.encode(oldUrl.getId()), HttpStatus.OK);
+			return new URLModel(oldUrl.getUrl(), Utility.encode(oldUrl.getId()));
 		}
-		String shortUrl = shortenerService.createShortURL(url.getLongURL().trim(), userID);
+		String longUrl = url.getLongURL().trim();
+		String shortUrl = shortenerService.createShortURL(longUrl, userID);
 		if (shortUrl != null)
-			return new ResponseEntity<String>(Utility.URL_Prefix + shortUrl, HttpStatus.CREATED);
-		return new ResponseEntity<String>("Error during creating short-url", HttpStatus.NOT_FOUND);
+			return new URLModel(longUrl, shortUrl);
+		throw new Exception("Error during creating short-url");
 	}
 
 	@RequestMapping(value = "/api/shortener", method = RequestMethod.GET)

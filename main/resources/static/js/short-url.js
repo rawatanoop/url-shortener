@@ -27,11 +27,11 @@ $('#shortButton').click(function(){
 
             var mymodal = $('#myModal');
               mymodal.find('.modal-title').text("Shorted Url created successfully!");
-              mymodal.find('.modal-body').text(data);
+              mymodal.find('.modal-body').text(data.urlPrefix+data.shortURL);
               mymodal.modal('show');
               if(xhr.status==201){  
 
-              createRow(null,0,{longURL:$('#longUrlText').val(),shortURL:data});             
+              createRow(null,0,data);             
                 
               }
               

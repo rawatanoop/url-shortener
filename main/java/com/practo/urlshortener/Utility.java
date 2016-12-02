@@ -1,5 +1,7 @@
 package com.practo.urlshortener;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.MessageDigest;
 
 import javax.crypto.Cipher;
@@ -19,7 +21,8 @@ public class Utility {
 	public static final String key = "RANDOM-KEY-123456789";
 	public static final String UserID_Session = "userID";
 	private static byte[] sharedvector = { 0x01, 0x02, 0x03, 0x05, 0x07, 0x0B, 0x0D, 0x11 };
-	public static String URL_Prefix = "";
+	public static String URL_Prefix = "http://35.160.83.124:8080/shortu/go/";
+	//public static String URL_Prefix = "http://localhost:8080/go/";
 	public static UserAgentStringParser parser = UADetectorServiceFactory.getResourceModuleParser();
 
 	public static String encode(Long num) {
@@ -101,7 +104,33 @@ public class Utility {
 		return result;
 	}
 
+	public static boolean isValidURL(String url) {
+		if (url == null || url.trim().isEmpty())
+			return false;
+		url = url.trim();
+		try {
+			URI uri = new URI(url);
+			if (!url.startsWith(Utility.URL_Prefix))
+				return true;
+		} catch (URISyntaxException e) {
+			return false;
+		}
+		if (!url.startsWith(Utility.URL_Prefix))
+			return true;
+
+		return false;
+	}
+
 	public static String getBrowserName(String agent) {
 		return parser.parse(agent).getName();
+	}
+
+	public static String getGoodURL(String longUrl) {
+		if (isValidURL(longUrl)) {
+			if (!longUrl.contains("//:")) {
+				return "http://" + longUrl;
+			}
+		}
+		return longUrl;
 	}
 }
